@@ -301,7 +301,7 @@
         _image: {
           type: String,
           notify: true,
-          computed: '_computeImage(pictures)'
+          computed: '_computeImage(photos)'
         },
 
         _slim: {
@@ -350,7 +350,7 @@
           reflectToAttribute: true
         },
 
-        pictures: {
+        photos: {
           type: Array,
           notify: true,
           reflectToAttribute: true,
@@ -428,9 +428,9 @@
         }
       },
 
-      _computeImage: function(pictures) {
-        if (Array.isArray(pictures) && pictures.length > 0)
-          return pictures[0];
+      _computeImage: function(photos) {
+        if (Array.isArray(photos) && photos.length > 0)
+          return photos[0];
         return null;
       },
 
@@ -512,7 +512,13 @@
       },
 
       toggleAddEntry: function() {
+        bloom.app.toggleAddEntry();
+      },
 
+      toggleEditing: function() {
+        console.log("Editing item...", this);
+        this.set("editing", true);
+        this.set("zerostate", true);
       },
 
       readObjectData: function() {
@@ -520,7 +526,7 @@
 
         // handle required fields
         payload.name = this.get("name");
-        payload.pictures = this.get("pictures") || [];
+        payload.photos = this.get("photos") || [];
 
         // handle test results
         if (this.get("tests") !== undefined && this.get("tests") != null) {
@@ -574,8 +580,8 @@
         // handle required fields
         payload.name = this.$$("#nameField").value;
         
-        if (this.get("pictures") && this.get("pictures").length > 0)
-          payload.pictures = this.get("pictures");
+        if (this.get("photos") && this.get("photos").length > 0)
+          payload.photos = this.get("photos");
 
         // handle test results
         if (this.$$("#testsToggle").checked) {
