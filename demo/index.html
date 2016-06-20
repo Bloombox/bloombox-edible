@@ -12,15 +12,65 @@
     <link rel="import" href="../bloombox-edible.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container.centered {
+        max-width: 700px !important;
+      }
     </style>
   </head>
   <body>
-
     <div class="vertical-section-container centered">
-      <h3>Basic bloombox-edible Demo</h3>
+      <h3>Zerostate Example</h3>
       <demo-snippet>
         <template>
-          <bloombox-edible></bloombox-edible>
+          <bloombox-edible zerostate></bloombox-edible>
+        </template>
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Data Example (normal display mode)</h3>
+      <demo-snippet>
+        <template>
+          <bloombox-edible
+            key="sample1"
+            display-mode="normal"
+            name="Chocolate Chip Cookie"
+            pictures='["test.jpg"]'
+            description="Delicious chocolate chip cookie"
+            tests='{"cbd":0,"thc":35}'
+            pricing='{"unit": {"available": true, "value": 5}}'
+            sale="20"
+            bogo="true"
+            vegan="true"
+            organic="true"
+            glutenfree="true"
+            visible="true"
+            premium="true"
+            partner="mm"></bloombox-edible>
+        </template>
+      </demo-snippet>
+    </div>
+
+    <div class="vertical-section-container centered">
+      <h3>Data Example (slim display mode)</h3>
+      <demo-snippet>
+        <template>
+          <bloombox-edible
+            key="sample2"
+            display-mode="slim"
+            name="Chocolate Chip Cookie"
+            pictures='["test.jpg"]'
+            description="Delicious chocolate chip cookie"
+            tests='{"cbd":0,"thc":35}'
+            pricing='{"unit": {"available": true, "value": 5}}'
+            sale="20"
+            bogo="true"
+            vegan="true"
+            organic="true"
+            glutenfree="true"
+            visible="true"
+            premium="true"
+            partner="mm"></bloombox-edible>
         </template>
       </demo-snippet>
     </div>
