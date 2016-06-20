@@ -19,7 +19,20 @@
   "homepage": "https://github.com/bloombox/bloombox-edible",
   "main": "bloombox-edible.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.5.0",
+    "paper-card": "PolymerElements/paper-card#^1.1.1",
+    "paper-input": "PolymerElements/paper-input#^1.1.11",
+    "paper-button": "PolymerElements/paper-button#^1.0.12",
+    "paper-slider": "PolymerElements/paper-slider#^1.0.11",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^1.2.1",
+    "iron-label": "PolymerElements/iron-label#^1.0.2",
+    "iron-icons": "PolymerElements/iron-icons#^1.1.3",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.8",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.2.2",
+    "bloombox-media": "Bloombox/bloombox-media#master",
+    "bloombox-styles": "Bloombox/bloombox-styles#^0.0.2",
+    "bloombox-testing": "Bloombox/bloombox-testing#master",
+    "bloombox-pricelist": "Bloombox/bloombox-pricelist#^0.0.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
