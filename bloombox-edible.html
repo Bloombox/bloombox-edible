@@ -10,14 +10,285 @@
 
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-label/iron-label.html">
+
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-slider/paper-slider.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+
+<link rel="import" href="../bloombox-media/bloombox-media.html">
+<link rel="import" href="../bloombox-styles/bloombox-styles.html">
+<link rel="import" href="../bloombox-testing/bloombox-testing.html">
+<link rel="import" href="../bloombox-pricelist/bloombox-pricelist.html">
+
+
 <dom-module id="bloombox-edible">
   <template>
-    <style>
+    <style is="custom-style" include="bloombox-styles">
       :host {
         display: block;
       }
+
+      :host .row {
+        display: block;
+        margin-top: 20px;
+      }
+
+      :host paper-card {
+        background-color: white;
+        min-width: 650px;
+      }
+
+      :host paper-card .card-content {
+        background-color: #eee;
+      }
+
+      :host paper-button {
+        --paper-button-ink-color: var(--bloombox-green-primary);
+      }
+
+      :host .edible-zerostate .row {
+        margin-left: 10px;
+      }
+
+      :host .edible-data-content .edible-no-description {
+        margin-left: 10px;
+      }
+
+      :host .edible-data-content .edible-description {
+        margin-left: 10px;
+      }
+
+      :host .row.stock-flags {
+        min-height: 60px;
+        line-height: 30px;
+        margin-left: 10px;
+      }
+
+      :host .edible-data-content .row iron-label {
+        padding: 5px;
+        border-radius: 3px;
+        background: #9c27b0;
+        color: white;
+      }
+
+      :host .edible-data-content .row iron-label.premium-label {
+        background: #8bc34a;
+      }
+
+      :host .row-label .row-label-value {
+        line-height: 30px;
+        text-transform: uppercase;
+        font-size: 8pt;
+        border-bottom: 1px solid black;
+      }
+
+      :host .edible-data-content .row iron-label.sale-label,
+      :host .edible-data-content .row iron-label.bogo-label {
+        background: #f44336;
+        color: white;
+      }
+
+      :host .edible-overlay {
+        opacity: 0.9;
+        background: #ddd;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        position: absolute;
+        cursor: default;
+      }
+
+      :host .not-in-stock:before {
+        content: '(Not in stock)';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        font-size: 180%;
+        font-style: italic;
+        top: 40%;
+      }
+
+      :host .edible-data-content bloombox-testing {
+        background: transparent;
+        --no-tests-overlay-background: #efefef;
+      }
     </style>
-    <b>EDIBLE</b>
+
+    <template is="dom-if" if="[[!zerostate]]">
+      <paper-card heading="[[name]]" class="edible-product edible-data-content fullwidth">
+        <div class="card-content">
+          <!-- Edible Description -->
+          <div class="row description-container">
+            <template is="dom-if" if="[[!_slim]]">
+              <template is="dom-if" if="[[description]]">
+                <div class="edible-description">[[description]]</div>
+              </template>
+              <template is="dom-if" if="[[!hasDescription()]]">
+                <div class="edible-no-description">(No description)</div>
+              </template>
+            </template>
+          </div><!-- end div.row.description-container -->
+
+          <!-- Stock Flags -->
+          <div class="stock-flags edible-info test-info row">
+            <!-- MPMH -->
+            <iron-label class="premium-label" hidden$="[[!premium]]"><span>[[_renderPremiumLabel(partner)]]</span></iron-label>
+
+            <!-- Sale -->
+            <iron-label class="sale-label" hidden$="[[!sale]]"><span>[[sale]]% OFF</span></iron-label>
+
+            <!-- Buy-One-Get-One -->
+            <iron-label class="bogo-label" hidden$="[[!bogo]]"><span>Buy One Get One</span></iron-label>
+
+            <!-- Vegan -->
+            <iron-label class="vegan-label" hidden$="[[!vegan]]"><span>Vegan</span></iron-label>
+
+            <!-- Organic -->
+            <iron-label class="organic-label" hidden$="[[!organic]]"><span>Organic</span></iron-label>
+
+            <!-- Gluten Free -->
+            <iron-label class="glutenfree-label" hidden$="[[!glutenfree]]"><span>Gluten Free</span></iron-label>
+
+            <!-- Test Results -->
+            <bloombox-testing
+              mode="basic"
+              thc="[[tests.thc]]"
+              cbd="[[tests.cbd]]"></bloombox-testing>
+          </div><!-- end div.row.stock-flags -->
+
+          <!-- Product Media -->
+          <div class="edible-media row">
+            <div class="bloombox-media-wrap">
+              <bloombox-media hidden$="[[_shouldHideImage()]]" disabled partner="[[partner]]" asset="[[_image]]"></bloombox-media>
+            </div><!-- end div.bloombox-media-wrap -->
+          </div><!-- end .row.edible-media -->
+
+          <!-- Price List -->
+          <div class="row pricelist">
+            <bloombox-price
+              class="edibleSealedPrice"
+              price="[[pricing.unit.value]]"
+              available="[[pricing.unit.available]]"
+              currency="$"></bloombox-price>
+          </div><!-- end div.row.pricelist -->
+          <template is="dom-if" if="[[!visible]]">
+            <div class="edible-overlay not-in-stock"></div><!-- end div.edible-overlay.not-in-stock -->
+          </template>
+        </div><!-- end div.card-content -->
+        <div class="card-actions">
+          <paper-button on-tap="toggleEditing"><iron-icon icon="create"></iron-icon>Edit</paper-button>
+          <paper-button on-tap="triggerDelete"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
+        </div>
+      </paper-card><!-- end paper-card.edible-product -->
+    </template>
+
+    <template is="dom-if" if="[[zerostate]]">
+      <paper-card class="edible-product edible-zerostate fullwidth">
+        <div class="card-content">
+          <div class="basic-info row">
+            <!-- Edible Name & Description -->
+            <paper-input id="nameField" placeholder="Edible Name" value="[[name]]" required no-label-float name="name" class="form-item edible-name"></paper-input>
+            <paper-textarea id="descriptionField" label="Description" value="[[description]]" no-label-float name="description" class="form-item edible-description"></paper-textarea>
+          </div><!-- end .row.basic-info -->
+
+          <!-- Pricing/Sale Flags -->
+          <div class="stock-flags row">
+            <div class="row-label">
+              <span class="row-label-value">Inventory</span>
+            </div><!-- end div.row-label -->
+
+            <div class="in-stock-toggle-option">
+              <paper-checkbox id="showToggle" checked="{{visible}}" class="form-item show-item-toggle" noink>In Stock</paper-checkbox>
+            </div><!-- end .in-stock-toggle-option -->
+
+            <div class="premium-toggle-option">
+              <paper-checkbox id="premiumToggle" checked="{{premium}}" class="form-item premium-toggle" noink>[[_renderPremiumLabel(partner)]]</paper-checkbox>
+            </div><!-- end .premium-toggle-option -->
+
+            <div class="sale-toggle-option">
+              <div class="sale-toggle-container">
+                <paper-checkbox id="saleToggle" checked="[[isOnSale()]]" on-tap="toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
+              </div><!-- end .sale-toggle-container -->
+              <template is="dom-if" if="{{sale}}">
+                <div class="sale-amount-container">
+                  <paper-slider id="saleValue" pin value="{{sale}}" max="95" min="5" editable step="5" class="form-item"></paper-slider>
+                </div><!-- end .sale-amount-container -->
+                <div class="sale-percentage-label">% off</div>
+              </template>
+            </div><!-- end .sale-toggle-option -->
+
+            <div class="bogo-toggle-option">
+              <paper-checkbox id="bogoToggle" checked="{{bogo}}" class="form-item item-bogo-toggle" noink>Buy One, Get One</paper-checkbox>
+            </div><!-- end .bogo-toggle-option -->
+
+            <div class="organic-toggle-option">
+              <paper-checkbox id="organicToggle" checked="{{organic}}" class="form-item item-organic-toggle" noink>Organic</paper-checkbox>
+            </div><!-- end .organic-toggle-option -->
+
+            <div class="vegan-toggle-option">
+              <paper-checkbox id="veganToggle" checked="{{vegan}}" class="form-item item-vegan-toggle" noink>Vegan</paper-checkbox>
+            </div><!-- end .vegan-toggle-option -->
+
+            <div class="glutenfree-toggle-option">
+              <paper-checkbox id="glutenfreeToggle" checked="{{glutenfree}}" class="form-item item-glutenfree-toggle" noink>Gluten Free</paper-checkbox>
+            </div><!-- end .glutenfree-toggle-option -->
+          </div><!-- end .row.stock-flags -->
+
+          <!-- Test Results -->
+          <div class="test-results row">
+            <div class="row-label">
+              <span class="row-label-value">Testing</span>
+            </div><!-- end div.row-label -->
+
+            <paper-checkbox id="testsToggle" checked="[[knownTestResults()]]" on-tap="toggleTests" class="form-item tests-toggle" noink>Test Results</paper-checkbox>
+            <div class="test-results-container">
+              <template is="dom-if" if="{{tests}}">
+                <bloombox-testing
+                  id="productTesting"
+                  zerostate
+                  mode="basic"
+                  thc="{{tests.thc}}"
+                  cbd="{{tests.cbd}}"></bloombox-testing>
+              </template>
+            </div><!-- end .test-results-container -->
+          </div><!-- end .row.test-results -->
+
+          <!-- Price List -->
+          <div class="row pricelist">
+            <bloombox-price
+              id="edibleEditablePrice"
+              editable
+              price="{{pricing.unit.value}}"
+              available="{{pricing.unit.available}}"
+              currency="$"></bloombox-price>
+          </div><!-- end div.row.pricelist -->
+        </div><!-- end div.card-content -->
+
+        <!-- Actions -->
+        <template is="dom-if" if="[[editing]]">
+          <div class="edible-zerostate-actions card-actions row">
+            <paper-button id="saveButton" raised on-tap="commitEdits"><iron-icon icon="save"></iron-icon>Save</paper-button>
+            <paper-button id="cancelButton" on-tap="cancelEdits"><iron-icon icon="cancel"></iron-icon>Cancel</paper-button>
+          </div><!-- end .edible-zerostate-actions.card-actions -->
+        </template>
+        <template is="dom-if" if="[[!editing]]">
+          <div class="edible-zerostate-actions edit-actions card-actions row">
+            <paper-button id="submitButton" raised on-tap="persist"><iron-icon icon="check-circle"></iron-icon>Create</paper-button>
+            <paper-button id="discardButton" on-tap="toggleAddEntry"><iron-icon icon="cancel"></iron-icon>Discard</paper-button>
+          </div><!-- end .edible-zerostate-actions.card-actions.edit-actions -->
+        </template>
+      </paper-card><!-- end paper-card.edible-product -->
+    </template>
   </template>
 
   <script>
@@ -26,10 +297,344 @@
       is: 'bloombox-edible',
 
       properties: {
-        prop1: {
+        // -- internals
+        _image: {
           type: String,
-          value: 'bloombox-edible',
+          notify: true,
+          computed: '_computeImage(pictures)'
+        },
+
+        _slim: {
+          type: Boolean,
+          notify: true,
+          computed: '_computeSlimMode(displayMode)'
+        },
+
+        displayMode: {
+          type: String,
+          value: 'normal',
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        zerostate: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        editing: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        // -- edible properties
+        key: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        name: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        description: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        pictures: {
+          type: Array,
+          notify: true,
+          reflectToAttribute: true,
+          value: function() {
+            return [];
+          }
+        },
+
+        tests: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        pricing: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true,
+          value: function() {
+            return {"unit": {"available": true, "value": 0}};
+          }
+        },
+
+        sale: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        bogo: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        vegan: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        organic: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        glutenfree: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        visible: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: true
+        },
+
+        premium: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        partner: {
+          type: String,
+          notify: true,
+          value: "mm"
         }
+      },
+
+      _computeImage: function(pictures) {
+        if (Array.isArray(pictures) && pictures.length > 0)
+          return pictures[0];
+        return null;
+      },
+
+      _computeSlimMode: function(displayMode) {
+          return displayMode == "slim";
+      },
+
+      _shouldHideImage: function() {
+        // we should hide the image if:
+        // 1) we are in slimline mode
+        // 2) there is no image and we are in zero-state
+        var image = this.get("_image"),
+            slim = this.get("_slim") || false;
+        return (slim || !image);
+      },
+
+      _renderPremiumLabel: function(partner) {
+        if (partner === "abatin")
+          return "MPMH";
+        return "Top Shelf";
+      },
+
+      hasDescription: function() {
+        var description = this.get("description");
+        return description !== undefined && description !== null && description.length > 1;
+      },
+
+      isOnSale: function() {
+        return this.sale !== undefined && this.sale > 0;
+      },
+
+      toggleSale: function() {
+        this.sale = this.$$("#saleToggle").checked ?
+            20 : undefined;
+      },
+
+      toggleTests: function() {
+        this.tests = this.$$("#testsToggle").checked ?
+            {} : undefined;
+      },
+
+      knownTestResults: function() {
+        return this.tests !== undefined && this.tests !== null && typeof this.tests == "object";
+      },
+
+      commitEdits: function(callback) {
+        var previous = this.readObjectData(),
+            serialized = this.readZeroStateForm()
+            that = this;
+        console.log("Committing edits...", previous, serialized);
+        bloom.app.saveEditsForEntry("edibles", this.get("key"), previous, serialized, function (error) {
+          // handle edit success/fail
+          if (error) {
+            console.error("Failed to save edits for item: ", this, error);
+            alert('Failed to apply edits.');
+          } else {
+            console.log("Edits applied successfully.");
+            if (callback !== undefined && typeof callback === "function")
+              callback();
+            that.set("editing", false);
+            that.set("zerostate", false);
+          }
+        });
+      },
+
+      cancelEdits: function() {
+        console.log("Cancelled staged edits for item.");
+        this.set("editing", false);
+        this.set("zerostate", false);
+      },
+
+      persist: function() {
+          bloom.app.saveNewObject("edibles", this.readZeroStateForm());  // read the form into our object
+      },
+
+      triggerDelete: function() {
+        console.log("Deleting item...", this);
+        bloom.app.deleteEntryAtId("edibles", this.get("key"));
+      },
+
+      toggleAddEntry: function() {
+
+      },
+
+      readObjectData: function() {
+        var payload = {};
+
+        // handle required fields
+        payload.name = this.get("name");
+        payload.pictures = this.get("pictures") || [];
+
+        // handle test results
+        if (this.get("tests") !== undefined && this.get("tests") != null) {
+          payload.tests = {
+            thc: this.get("tests").thc,
+            cbd: this.get("tests").cbd
+          };
+        }
+
+        // handle optional fields
+        if (this.get("premium") == true) {
+          payload.flags = payload.flags || {};
+          payload.flags.premium = true;
+        }
+        if (this.get("sale") !== undefined && this.get("sale") != null) {
+          payload.flags = payload.flags || {};
+          payload.flags.sale = this.get("sale");
+        }
+        if (this.get("visible") != null && this.get("visible") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.visible = this.get("visible");
+        }
+        if (this.get("bogo") != null && this.get("bogo") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.bogo = this.get("bogo");
+        }
+        if (this.get("vegan") != null && this.get("vegan") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.vegan = this.get("vegan");
+        }
+        if (this.get("organic") != null && this.get("organic") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.organic = this.get("organic");
+        }
+        if (this.get("glutenfree") != null && this.get("glutenfree") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.glutenfree = this.get("glutenfree");
+        }
+        if (this.get("description") !== undefined && this.get("description") !== null &&
+            this.get("description").length > 0) payload.description = this.get("description");
+        return payload;
+      },
+
+      readZeroStateForm: function() {
+        var payload = {},
+            priceValue = this.$$("#edibleEditablePrice").value,
+            priceAvailable = this.$$("#edibleEditablePrice").available,
+            pricelist = {},
+            mi, mpayload, testing;
+
+        // handle required fields
+        payload.name = this.$$("#nameField").value;
+        
+        if (this.get("pictures") && this.get("pictures").length > 0)
+          payload.pictures = this.get("pictures");
+
+        // handle test results
+        if (this.$$("#testsToggle").checked) {
+          testing = this.$$("#productTesting");
+          payload.tests = {
+            thc: testing.thc,
+            cbd: testing.cbd,
+            terpenes: {
+              pinene: testing.pinene,
+              myrcene: testing.myrcene,
+              limonene: testing.limonene,
+              caryophyllene: testing.caryophyllene,
+              linalool: testing.linalool
+            }
+          };
+        }
+
+        payload.pricing = {
+          unit: {
+            available: priceAvailable,
+            value: priceValue
+          }
+        }
+
+        // handle optional fields
+        if (this.$$("#premiumToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.premium = true;
+        }
+        if (this.$$("#showToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.visible = true;
+        } else {
+          payload.flags = payload.flags || {};
+          payload.flags.visible = false;
+        }
+        if (this.$$("#bogoToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.bogo = true;
+        }
+        if (this.$$("#saleToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.sale = this.$$("#saleValue").value;
+        }
+        if (this.$$("#veganToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.vegan = true;
+        }
+        if (this.$$("#organicToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.organic = true;
+        }
+        if (this.$$("#glutenfreeToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.glutenfree = true;
+        }
+        if (this.$$("#descriptionField").value !== undefined && this.$$("#descriptionField").value.length > 0)
+          payload.description = this.$$("#descriptionField").value;
+        return payload;
       }
     });
   </script>
