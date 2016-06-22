@@ -40,7 +40,7 @@
     </style>
 
     <template is="dom-if" if="[[!zerostate]]">
-      <paper-card heading="[[brand]]: [[name]]" class="product-card edible-product data-content fullwidth">
+      <paper-card heading="[[_renderBrand()]][[name]]" class="product-card edible-product data-content fullwidth">
         <div class="card-content">
           <!-- Edible Description -->
           <div class="row description-container">
