@@ -1,6 +1,6 @@
 
 <!--
-`<bloombox-edible>` provides UI for creating and managing edible products.
+`<bloombox-edible>` provides UI for creating and managing edible cannabis products.
 
 @group Bloombox Elements
 @element bloombox-testing
@@ -216,18 +216,29 @@
       is: 'bloombox-edible',
 
       properties: {
+        /**
+         * Computes the current image/asset value, depending on how many `photos` are specified.
+         */
         _image: {
           type: String,
           notify: true,
           computed: '_computeImage(photos)'
         },
 
+        /**
+         * Computes whether we are operating in `slim` display mode.
+         */
         _slim: {
           type: Boolean,
           notify: true,
           computed: '_computeSlimMode(displayMode)'
         },
 
+        /**
+         * Display mode for the widget. Supported modes are `normal` and `slim`:
+         * - `normal`: Displays all available/specified widget data
+         * - `slim`: Omits description and product image
+         */
         displayMode: {
           type: String,
           value: 'normal',
@@ -235,6 +246,11 @@
           reflectToAttribute: true
         },
 
+        /**
+         * Flag indicating that we are in a mode that demands a form to edit the data backing
+         * this widget. Combined with `editing`, this means we are either creating
+         * (`editing=false`) or editing an existing item.
+         */
         zerostate: {
           type: Boolean,
           value: false,
@@ -242,6 +258,10 @@
           reflectToAttribute: true
         },
 
+        /**
+         * Flag indicating that we are in a mode where we are editing an existing item, not
+         * creating a new one.
+         */
         editing: {
           type: Boolean,
           value: false,
@@ -249,36 +269,64 @@
           reflectToAttribute: true
         },
 
+        /**
+         * Object key for the current item. Provided by underlying persistence and unavailable
+         * until a new entry is stored.
+         */
         key: {
           type: String,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * String name of the brand that produces and/or distributes this product. Usually a
+         * simple string such as `"Kiva"` or `"Absolute Extracts"`.
+         */
         brand: {
           type: String,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * String value of the `type` of this current item. This property varies by item type.
+         * In `<bloombox-edible>`'s case, the following values are selectable:
+         * - `Chocolate`
+         * - `Baked Good`
+         * - `Candy`
+         * - `Other`
+         */
         type: {
           type: String,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * String name of the current product itself. Usually a simple string such as
+         * "Milk Chocolate Bar" or "High-strength CBD Cartridge".
+         */
         name: {
           type: String,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * Extended description for this product. Optional, hidden from the UI if not specified
+         * by the menu administrator.
+         */
         description: {
           type: String,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * Array of images attached to this product as media, if any. Provides an empty array
+         * by default to facilitate blind `.push()`.
+         */
         photos: {
           type: Array,
           notify: true,
@@ -288,12 +336,27 @@
           }
         },
 
+        /**
+         * Object specifying QA test results for this product. This is expressable in two major
+         * forms, `rich` and `basic` (refer to the `<bloombox-testing>` documentation for more).
+         *
+         * Each product is coded to one or the other test result structure. In the case of
+         * `<bloombox-edible>`, only `basic` testing (`cbd` and `thc` values) is supported.
+         */
         tests: {
           type: Object,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * Object specifying product pricing. This is specified in either weighted pricing (i.e.
+         * pricing per-gram or per-ounce), which is generally used for raw product, namely
+         * flowers and concentrates.
+         *
+         * `<bloombox-edible>` uses per-unit pricing, and returns an object in that structure by
+         * default.
+         */
         pricing: {
           type: Object,
           notify: true,
@@ -303,12 +366,20 @@
           }
         },
 
+        /**
+         * Value specifying the amount that this product is currently on-sale, if any. No value
+         * or a value of `0` is interpreted to mean "not on sale."
+         */
         sale: {
           type: Number,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * Flag value indicating that this item is on sale, such that buying one will get you
+         * an additional item for free.
+         */
         bogo: {
           type: Boolean,
           notify: true,
@@ -316,6 +387,10 @@
           value: false
         },
 
+        /**
+         * Flag value indicating that this item meets a vegan person's dietary requirements
+         * and/or is marketed towards that community.
+         */
         vegan: {
           type: Boolean,
           notify: true,
@@ -323,6 +398,9 @@
           value: false
         },
 
+        /**
+         * Flag value indicating that this item is organic.
+         */
         organic: {
           type: Boolean,
           notify: true,
@@ -330,6 +408,10 @@
           value: false
         },
 
+        /**
+         * Flag value indicating that this item is free of Gluten, and/or is marketed towards
+         * the gluten free community.
+         */
         glutenfree: {
           type: Boolean,
           notify: true,
@@ -337,6 +419,9 @@
           value: false
         },
 
+        /**
+         * Boolean flag indicating whether this item is currently visible on the menu.
+         */
         visible: {
           type: Boolean,
           notify: true,
@@ -344,12 +429,20 @@
           value: true
         },
 
+        /**
+         * Boolean flag indicating whether this item should be flagged as "Top Shelf"/"MPMH"
+         * or not.
+         */
         premium: {
           type: Boolean,
           notify: true,
           reflectToAttribute: true
         },
 
+        /**
+         * Specifies the currently-active partner, to facilitate the generation of asset/media
+         * URLs and upload files to the right place.
+         */
         partner: {
           type: String,
           notify: true,
