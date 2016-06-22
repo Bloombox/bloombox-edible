@@ -43,7 +43,7 @@
               <template is="dom-if" if="[[description]]">
                 <div class="product-description">[[description]]</div>
               </template>
-              <template is="dom-if" if="[[!hasDescription()]]">
+              <template is="dom-if" if="[[!description]]">
                 <div class="edible-no-description">(No description)</div>
               </template>
             </template>
@@ -380,11 +380,6 @@
         if (partner === "abatin")
           return "MPMH";
         return "Top Shelf";
-      },
-
-      hasDescription: function() {
-        var description = this.get("description");
-        return description !== undefined && description !== null && description.length > 1;
       },
 
       isOnSale: function() {
