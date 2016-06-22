@@ -32,107 +32,16 @@
 <dom-module id="bloombox-edible">
   <template>
     <style is="custom-style" include="bloombox-styles">
-      :host {
-        display: block;
-      }
-
-      :host .row {
-        display: block;
-        margin-top: 20px;
-      }
-
-      :host paper-card {
-        background-color: white;
-        min-width: 650px;
-      }
-
-      :host paper-card .card-content {
-        background-color: #eee;
-      }
-
-      :host paper-button {
-        --paper-button-ink-color: var(--bloombox-green-primary);
-      }
-
-      :host .edible-zerostate .row {
-        margin-left: 10px;
-      }
-
-      :host .edible-data-content .edible-no-description {
-        margin-left: 10px;
-      }
-
-      :host .edible-data-content .edible-description {
-        margin-left: 10px;
-      }
-
-      :host .row.stock-flags {
-        min-height: 60px;
-        line-height: 30px;
-        margin-left: 10px;
-      }
-
-      :host .edible-data-content .row iron-label {
-        padding: 5px;
-        border-radius: 3px;
-        background: #9c27b0;
-        color: white;
-      }
-
-      :host .edible-data-content .row iron-label.premium-label {
-        background: #8bc34a;
-      }
-
-      :host .row-label .row-label-value {
-        line-height: 30px;
-        text-transform: uppercase;
-        font-size: 8pt;
-        border-bottom: 1px solid black;
-      }
-
-      :host .edible-data-content .row iron-label.sale-label,
-      :host .edible-data-content .row iron-label.bogo-label {
-        background: #f44336;
-        color: white;
-      }
-
-      :host .edible-overlay {
-        opacity: 0.9;
-        background: #ddd;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        position: absolute;
-        cursor: default;
-      }
-
-      :host .not-in-stock:before {
-        content: '(Not in stock)';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        text-align: center;
-        font-size: 180%;
-        font-style: italic;
-        top: 40%;
-      }
-
-      :host .edible-data-content bloombox-testing {
-        background: transparent;
-        --no-tests-overlay-background: #efefef;
-      }
     </style>
 
     <template is="dom-if" if="[[!zerostate]]">
-      <paper-card heading="[[name]]" class="edible-product edible-data-content fullwidth">
+      <paper-card heading="[[name]]" class="product-card edible-product data-content fullwidth">
         <div class="card-content">
           <!-- Edible Description -->
           <div class="row description-container">
             <template is="dom-if" if="[[!_slim]]">
               <template is="dom-if" if="[[description]]">
-                <div class="edible-description">[[description]]</div>
+                <div class="product-description">[[description]]</div>
               </template>
               <template is="dom-if" if="[[!hasDescription()]]">
                 <div class="edible-no-description">(No description)</div>
@@ -183,7 +92,7 @@
               currency="$"></bloombox-price>
           </div><!-- end div.row.pricelist -->
           <template is="dom-if" if="[[!visible]]">
-            <div class="edible-overlay not-in-stock"></div><!-- end div.edible-overlay.not-in-stock -->
+            <div class="not-in-stock-overlay not-in-stock"></div><!-- end div.edible-overlay.not-in-stock -->
           </template>
         </div><!-- end div.card-content -->
         <div class="card-actions">
@@ -194,7 +103,7 @@
     </template>
 
     <template is="dom-if" if="[[zerostate]]">
-      <paper-card class="edible-product edible-zerostate fullwidth">
+      <paper-card header="Edible" class="product-card edible-product zerostate fullwidth">
         <div class="card-content">
           <div class="basic-info row">
             <!-- Edible Name & Description -->
