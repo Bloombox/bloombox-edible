@@ -107,8 +107,17 @@
         <div class="card-content">
           <div class="basic-info row">
             <!-- Edible Name & Description -->
-            <paper-input id="nameField" placeholder="Edible Name" value="[[name]]" required no-label-float name="name" class="form-item edible-name"></paper-input>
-            <paper-textarea id="descriptionField" label="Description" value="[[description]]" no-label-float name="description" class="form-item edible-description"></paper-textarea>
+            <paper-input id="brandField" placeholder="Brand Name" value="{{brand}}" required no-label-float name="brand" class="form-item edible-brand"></paper-input>
+            <paper-input id="nameField" placeholder="Product Name" value="{{name}}" required no-label-float name="name" class="form-item edible-name"></paper-input>
+            <paper-textarea id="descriptionField" label="Description" value="{{description}}" no-label-float name="description" class="form-item edible-description"></paper-textarea>
+            <paper-dropdown-menu id="typeField" label="Edible Type" class="form-item" noink no-label-float required name="type">
+              <paper-listbox class="dropdown-content" selected="{{type}}">
+                <paper-item>Baked Good</paper-item>
+                <paper-item>Chocolate</paper-item>
+                <paper-item>Candy</paper-item>
+                <paper-item>Other</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu><!-- end paper-dropdown-menu#typeField -->
           </div><!-- end .row.basic-info -->
 
           <!-- Pricing/Sale Flags -->
@@ -243,6 +252,18 @@
 
         // -- edible properties
         key: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        brand: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        type: {
           type: String,
           notify: true,
           reflectToAttribute: true
@@ -436,6 +457,8 @@
 
         // handle required fields
         payload.name = this.get("name");
+        payload.brand = this.get("brand");
+        payload.type = this.get("type");
         payload.photos = this.get("photos") || [];
 
         // handle test results
@@ -489,6 +512,8 @@
 
         // handle required fields
         payload.name = this.$$("#nameField").value;
+        payload.brand = this.$$("#brandField").value;
+        payload.type = this.$$("#typeField").value;
         
         if (this.get("photos") && this.get("photos").length > 0)
           payload.photos = this.get("photos");
