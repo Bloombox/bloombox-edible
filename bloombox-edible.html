@@ -44,7 +44,7 @@
                 <div class="product-description">[[description]]</div>
               </template>
               <template is="dom-if" if="[[!description]]">
-                <div class="edible-no-description">(No description)</div>
+                <div class="no-description">(No description)</div>
               </template>
             </template>
           </div><!-- end div.row.description-container -->
@@ -77,7 +77,7 @@
           </div><!-- end div.row.stock-flags -->
 
           <!-- Product Media -->
-          <div class="edible-media row">
+          <div class="product-media edible-media row">
             <div class="bloombox-media-wrap">
               <bloombox-media hidden$="[[_shouldHideImage()]]" disabled partner="[[partner]]" asset="[[_image]]"></bloombox-media>
             </div><!-- end div.bloombox-media-wrap -->
@@ -92,12 +92,12 @@
               currency="$"></bloombox-price>
           </div><!-- end div.row.pricelist -->
           <template is="dom-if" if="[[!visible]]">
-            <div class="not-in-stock-overlay not-in-stock"></div><!-- end div.edible-overlay.not-in-stock -->
+            <div class="not-in-stock-overlay not-in-stock"></div><!-- end div.not-in-stock-overlay -->
           </template>
         </div><!-- end div.card-content -->
         <div class="card-actions">
-          <paper-button on-tap="toggleEditing"><iron-icon icon="create"></iron-icon>Edit</paper-button>
-          <paper-button on-tap="triggerDelete"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
+          <paper-button on-tap="edit"><iron-icon icon="create"></iron-icon>Edit</paper-button>
+          <paper-button on-tap="delete"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
         </div>
       </paper-card><!-- end paper-card.product-card.data-content.edible-product -->
     </template>
@@ -106,7 +106,7 @@
       <paper-card header="Edible" class="product-card edible-product zerostate fullwidth">
         <div class="card-content">
           <div class="basic-info row">
-            <!-- Edible Name & Description -->
+            <!-- Name & Description -->
             <paper-input id="brandField" placeholder="Brand Name" value="{{brand}}" required no-label-float name="brand" class="form-item edible-brand"></paper-input>
             <paper-input id="nameField" placeholder="Product Name" value="{{name}}" required no-label-float name="name" class="form-item edible-name"></paper-input>
             <paper-textarea id="descriptionField" label="Description" value="{{description}}" no-label-float name="description" class="form-item edible-description"></paper-textarea>
@@ -136,7 +136,7 @@
 
             <div class="sale-toggle-option">
               <div class="sale-toggle-container">
-                <paper-checkbox id="saleToggle" checked="[[isOnSale()]]" on-tap="toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
+                <paper-checkbox id="saleToggle" checked="[[_isOnSale()]]" on-tap="_toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
               </div><!-- end .sale-toggle-container -->
               <template is="dom-if" if="{{sale}}">
                 <div class="sale-amount-container">
@@ -169,7 +169,7 @@
               <span class="row-label-value">Testing</span>
             </div><!-- end div.row-label -->
 
-            <paper-checkbox id="testsToggle" checked="[[knownTestResults()]]" on-tap="toggleTests" class="form-item tests-toggle" noink>Test Results</paper-checkbox>
+            <paper-checkbox id="testsToggle" checked="[[_hasKnownTestResults()]]" on-tap="_toggleTests" class="form-item tests-toggle" noink>Test Results</paper-checkbox>
             <div class="test-results-container">
               <template is="dom-if" if="{{tests}}">
                 <bloombox-testing
@@ -185,7 +185,7 @@
           <!-- Price List -->
           <div class="row pricelist">
             <bloombox-price
-              id="edibleEditablePrice"
+              id="editablePrice"
               editable
               price="{{pricing.unit.value}}"
               available="{{pricing.unit.available}}"
@@ -195,15 +195,15 @@
 
         <!-- Actions -->
         <template is="dom-if" if="[[editing]]">
-          <div class="edible-zerostate-actions card-actions row">
+          <div class="zerostate-actions edible-zerostate-actions card-actions row">
             <paper-button id="saveButton" raised on-tap="commitEdits"><iron-icon icon="save"></iron-icon>Save</paper-button>
             <paper-button id="cancelButton" on-tap="cancelEdits"><iron-icon icon="cancel"></iron-icon>Cancel</paper-button>
           </div><!-- end .edible-zerostate-actions.card-actions -->
         </template>
         <template is="dom-if" if="[[!editing]]">
-          <div class="edible-zerostate-actions edit-actions card-actions row">
+          <div class="zerostate-actions edible-zerostate-actions edit-actions card-actions row">
             <paper-button id="submitButton" raised on-tap="persist"><iron-icon icon="check-circle"></iron-icon>Create</paper-button>
-            <paper-button id="discardButton" on-tap="toggleAddEntry"><iron-icon icon="cancel"></iron-icon>Discard</paper-button>
+            <paper-button id="discardButton" on-tap="_triggerDiscard"><iron-icon icon="cancel"></iron-icon>Discard</paper-button>
           </div><!-- end .edible-zerostate-actions.card-actions.edit-actions -->
         </template>
       </paper-card><!-- end paper-card.product-card.zerostate.edible-product -->
@@ -378,7 +378,7 @@
 
         /**
          * Flag value indicating that this item is on sale, such that buying one will get you
-         * an additional item for free.
+         * an additional item for free ("Buy One Get One").
          */
         bogo: {
           type: Boolean,
@@ -450,49 +450,93 @@
         }
       },
 
+      /**
+       * Computation function for property `_image`, which plucks the active photo from `photos`,
+       * if any/applicable. Return value is a string asset reference to a photo in storage.
+       */
       _computeImage: function(photos) {
         if (Array.isArray(photos) && photos.length > 0)
           return photos[0];
         return null;
       },
 
+      /**
+       * Computation function that returns whether we are currently in `slim` display mode.
+       */
       _computeSlimMode: function(displayMode) {
           return displayMode == "slim";
       },
 
+      /**
+       * Render function that decides whether we should hide our `<bloombox-media>` element.
+       * We usually decide to hide it when:
+       * - The component is being viewed in `slim` mode
+       * - There is no image and we are not in `zerostate` mode
+       */
       _shouldHideImage: function() {
         // we should hide the image if:
         // 1) we are in slimline mode
         // 2) there is no image and we are in zero-state
         var image = this.get("_image"),
-            slim = this.get("_slim") || false;
+            slim = this.get("_slim");
         return (slim || !image);
       },
 
+      /**
+       * Render function that returns the label text that should be used for "Top Shelf".
+       * For everyone but Abatin Wellness, this is "Top Shelf." For them, it is "MPMH,"
+       * which stands for *Minimally Processed, Minimally Handled*.
+       */
       _renderPremiumLabel: function(partner) {
         if (partner === "abatin")
           return "MPMH";
         return "Top Shelf";
       },
 
-      isOnSale: function() {
+      /**
+       * Render function that indicates whether the current item is on sale.
+       */
+      _isOnSale: function() {
         return this.sale !== undefined && this.sale > 0;
       },
 
-      toggleSale: function() {
+      /**
+       * Render function and UI responder that enables selection of a sale value via a
+       * slider UI.
+       */
+      _toggleSale: function() {
         this.sale = this.$$("#saleToggle").checked ?
             20 : undefined;
       },
 
-      toggleTests: function() {
+      /**
+       * Render function and UI responder that enables input of product QA testing
+       * results.
+       */
+      _toggleTests: function() {
         this.tests = this.$$("#testsToggle").checked ?
             {} : undefined;
       },
 
-      knownTestResults: function() {
+      /**
+       * Render function that indicates whether the current item has QA test results
+       * available.
+       */
+      _hasKnownTestResults: function() {
         return this.tests !== undefined && this.tests !== null && typeof this.tests == "object";
       },
 
+      /**
+       * Discard the current `zerostate`/uncommitted new item.
+       */
+      _triggerDiscard: function() {
+        bloom.app.toggleAddEntry();
+      },
+
+      /**
+       * Commit current edits to this object. Used from `zerostate` mode to persist
+       * changes upwards to the active application.
+       */
       commitEdits: function(callback) {
         var previous = this.readObjectData(),
             serialized = this.readZeroStateForm()
@@ -513,31 +557,43 @@
         });
       },
 
+      /** 
+       * Cancel staged edits and revert out of editing UI.
+       */
       cancelEdits: function() {
         console.log("Cancelled staged edits for item.");
         this.set("editing", false);
         this.set("zerostate", false);
       },
 
+      /**
+       * Save the current `zerostate` dataset as a new entry in underlying persistence.
+       */
       persist: function() {
           bloom.app.saveNewObject("edibles", this.readZeroStateForm());  // read the form into our object
       },
 
-      triggerDelete: function() {
+      /**
+       * Delete the current item from underlying persistence.
+       */
+      delete: function() {
         console.log("Deleting item...", this);
         bloom.app.deleteEntryAtId("edibles", this.get("key"));
       },
 
-      toggleAddEntry: function() {
-        bloom.app.toggleAddEntry();
-      },
-
-      toggleEditing: function() {
+      /**
+       * Edit the current item (switch to `zerostate` mode).
+       */
+      edit: function() {
         console.log("Editing item...", this);
         this.set("editing", true);
         this.set("zerostate", true);
       },
 
+      /**
+       * Read underlying object data, suitable for writing into underlying persistence
+       * or comparing with edits.
+       */
       readObjectData: function() {
         var payload = {};
 
@@ -546,6 +602,7 @@
         payload.brand = this.get("brand");
         payload.type = this.get("type");
         payload.photos = this.get("photos") || [];
+        payload.pricing = this.get("pricing");
 
         // handle test results
         if (this.get("tests") !== undefined && this.get("tests") != null) {
@@ -589,10 +646,13 @@
         return payload;
       },
 
+      /**
+       * Read underlying object data direct from the current zero-state form.
+       */
       readZeroStateForm: function() {
         var payload = {},
-            priceValue = this.$$("#edibleEditablePrice").value,
-            priceAvailable = this.$$("#edibleEditablePrice").available,
+            priceValue = this.$$("#editablePrice").value,
+            priceAvailable = this.$$("#editablePrice").available,
             pricelist = {},
             mi, mpayload, testing;
 
