@@ -26,7 +26,7 @@
 <link rel="import" href="../bloombox-media/bloombox-media.html">
 <link rel="import" href="../bloombox-styles/bloombox-styles.html">
 <link rel="import" href="../bloombox-testing/bloombox-testing.html">
-<link rel="import" href="../bloombox-pricelist/bloombox-pricelist.html">
+<link rel="import" href="../bloombox-pricelist/bloombox-price.html">
 
 
 <dom-module id="bloombox-edible">
@@ -99,7 +99,7 @@
           <paper-button on-tap="toggleEditing"><iron-icon icon="create"></iron-icon>Edit</paper-button>
           <paper-button on-tap="triggerDelete"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
         </div>
-      </paper-card><!-- end paper-card.edible-product -->
+      </paper-card><!-- end paper-card.product-card.data-content.edible-product -->
     </template>
 
     <template is="dom-if" if="[[zerostate]]">
@@ -206,7 +206,7 @@
             <paper-button id="discardButton" on-tap="toggleAddEntry"><iron-icon icon="cancel"></iron-icon>Discard</paper-button>
           </div><!-- end .edible-zerostate-actions.card-actions.edit-actions -->
         </template>
-      </paper-card><!-- end paper-card.edible-product -->
+      </paper-card><!-- end paper-card.product-card.zerostate.edible-product -->
     </template>
   </template>
 
@@ -216,7 +216,6 @@
       is: 'bloombox-edible',
 
       properties: {
-        // -- internals
         _image: {
           type: String,
           notify: true,
@@ -250,7 +249,6 @@
           reflectToAttribute: true
         },
 
-        // -- edible properties
         key: {
           type: String,
           notify: true,
