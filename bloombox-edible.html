@@ -111,7 +111,7 @@
     </template>
 
     <template is="dom-if" if="[[zerostate]]">
-      <paper-card header="Edible" class="product-card edible-product zerostate fullwidth">
+      <paper-card heading="Edible" class="product-card edible-product zerostate fullwidth">
         <div class="card-content">
           <div class="basic-info row">
             <!-- Name & Description -->
@@ -219,12 +219,14 @@
   </template>
 
   <script>
-    Polymer({
-
+    Polymer.BloomboxEdible = Polymer({
       is: 'bloombox-edible',
-
-      schema: 'edibles',
       behaviors: [Polymer.BloomboxUnitPricingProductCardBehavior],
+
+      /**
+       * Persistence schema and storage collection for this item.
+       */
+      _schema: 'edibles',
 
       properties: {
         /**
