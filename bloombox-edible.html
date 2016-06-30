@@ -124,11 +124,11 @@
             <paper-input id="nameField" placeholder="Product Name" value="{{name}}" required no-label-float name="name" class="form-item edible-name"></paper-input>
             <paper-textarea id="descriptionField" label="Description" value="{{description}}" no-label-float name="description" class="form-item edible-description"></paper-textarea>
             <paper-dropdown-menu id="typeField" label="Edible Type" class="form-item" noink no-label-float required name="type">
-              <paper-listbox class="dropdown-content" selected="{{type}}">
-                <paper-item>Baked Good</paper-item>
-                <paper-item>Chocolate</paper-item>
-                <paper-item>Candy</paper-item>
-                <paper-item>Other</paper-item>
+              <paper-listbox class="dropdown-content" selected="{{type}}" attr-for-selected="key">
+                <paper-item key="Baked Good">Baked Good</paper-item>
+                <paper-item key="Chocolate">Chocolate</paper-item>
+                <paper-item key="Candy">Candy</paper-item>
+                <paper-item key="Other">Other</paper-item>
               </paper-listbox>
             </paper-dropdown-menu><!-- end paper-dropdown-menu#typeField -->
           </div><!-- end .row.basic-info -->
@@ -237,7 +237,7 @@
   <script>
     Polymer.BloomboxEdible = Polymer({
       is: 'bloombox-edible',
-      behaviors: [Polymer.BloomboxUnitPricingProductCardBehavior],
+      behaviors: [Polymer.BloomboxBaseProductCardBehavior, Polymer.BloomboxUnitPricingProductCardBehavior],
 
       /**
        * Persistence schema and storage collection for this item.
