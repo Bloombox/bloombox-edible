@@ -136,7 +136,7 @@
             <div class="not-in-stock-overlay not-in-stock"></div><!-- end div.not-in-stock-overlay -->
           </template>
         </div><!-- end div.card-content -->
-               <div class="card-actions">
+        <div class="card-actions">
           <paper-icon-button id="editButton" on-tap="edit" icon="create"></paper-icon-button>
           <paper-tooltip for="editButton" position="left">Edit Edible</paper-tooltip>
 
@@ -279,9 +279,8 @@
   function defaultTestConfig() {
       return {
         thc: 0.0,
-        cbd: 0.0,
-        terpenes: Polymer.DefaultTerpeneConfig()};
-    };
+        cbd: 0.0
+      };
 
     Polymer.BloomboxEdible = Polymer({
       is: 'bloombox-edible',
