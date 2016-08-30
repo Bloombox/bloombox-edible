@@ -14,14 +14,18 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-label/iron-label.html">
 
-<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-tabs/paper-tab.html">
+<link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
 <link rel="import" href="../paper-slider/paper-slider.html">
-<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../bloombox-media/bloombox-media.html">
@@ -29,70 +33,94 @@
 <link rel="import" href="../bloombox-testing/bloombox-testing.html">
 <link rel="import" href="../bloombox-product/bloombox-product.html">
 <link rel="import" href="../bloombox-pricelist/bloombox-price.html">
-
+<link rel="import" href="../bloombox-pricelist/bloombox-pricelist.html">
 
 <dom-module id="bloombox-edible">
   <template>
     <style is="custom-style" include="bloombox-styles">
+      :root {
+        --paper-icon-button-ink-color: green;
+      }
+
       :host {
         display: block;
+        width: 100%;
+      }
+
+      .product-card .card-actions {
+        position: absolute;
+        right: 60px;
+        display: flex;
+        flex-direction: column;
+        top: 20px;
+      }
+
+      .product-card .card-actions paper-icon-button {
+        margin-bottom: 10px;
+        color: #333;
+        --paper-icon-button: {
+          background-color: #ddd;
+          border-radius: 24px;
+        };
+      }
+
+      .product-card .card-actions paper-icon-button iron-icon {
+        color: #333;
       }
     </style>
 
     <template is="dom-if" if="[[!zerostate]]">
-      <paper-card heading="[[_renderBrand()]][[name]]" class="product-card edible-product data-content fullwidth">
+      <div class="product-card edible-card">
         <div class="card-content">
-          <!-- Edible Description -->
+          <div class="name-row">
+            <h2>[[name]]</h2> 
+
+            <!-- Stock Flags -->
+            <div class="stock-flags edible-info test-info row">
+              <div class="base-flags">
+                <!-- MPMH -->
+                <iron-label class="premium-label" hidden$="[[!premium]]"><span>[[_renderPremiumLabel(partner)]]</span></iron-label>
+
+                <!-- Sale -->
+                <iron-label class="sale-label" hidden$="[[!sale]]"><span>[[sale]]% OFF</span></iron-label>
+
+                <!-- Buy-One-Get-One -->
+                <iron-label class="bogo-label" hidden$="[[!bogo]]"><span>Buy One Get One</span></iron-label>
+
+                <!-- Type Label -->
+                <iron-label class="type-label"><span>[[type]]</span></iron-label>
+
+                <!-- Vegan -->
+                <iron-label class="vegan-label" hidden$="[[!vegan]]"><span>Vegan</span></iron-label>
+
+                <!-- Organic -->
+                <iron-label class="organic-label" hidden$="[[!organic]]"><span>Organic</span></iron-label>
+
+                <!-- Gluten Free -->
+                <iron-label class="glutenfree-label" hidden$="[[!glutenfree]]"><span>Gluten Free</span></iron-label>
+              </div>
+
+              <!-- Test Results -->
+              <bloombox-testing
+                mode="basic"
+                thc="[[tests.thc]]"
+                cbd="[[tests.cbd]]"></bloombox-testing>
+            </div><!-- end div.row.stock-flags -->
+          </div><!-- end div.name-row -->
+
+          <!-- Description -->
           <div class="row description-container">
-            <template is="dom-if" if="[[!_slim]]">
-              <template is="dom-if" if="[[description]]">
-                <div class="product-description">[[description]]</div>
-              </template>
-              <template is="dom-if" if="[[!description]]">
-                <div class="no-description">(No description)</div>
-              </template>
-            </template>
+            <div class$="[[_descriptionClass]]">[[_descriptionText]]</div>
           </div><!-- end div.row.description-container -->
-
-          <!-- Stock Flags -->
-          <div class="stock-flags edible-info test-info row">
-            <!-- MPMH -->
-            <iron-label class="premium-label" hidden$="[[!premium]]"><span>[[_renderPremiumLabel(partner)]]</span></iron-label>
-
-            <!-- Sale -->
-            <iron-label class="sale-label" hidden$="[[!sale]]"><span>[[sale]]% OFF</span></iron-label>
-
-            <!-- Buy-One-Get-One -->
-            <iron-label class="bogo-label" hidden$="[[!bogo]]"><span>Buy One Get One</span></iron-label>
-
-            <!-- Type Label -->
-            <iron-label class="type-label"><span>[[type]]</span></iron-label>
-
-            <!-- Vegan -->
-            <iron-label class="vegan-label" hidden$="[[!vegan]]"><span>Vegan</span></iron-label>
-
-            <!-- Organic -->
-            <iron-label class="organic-label" hidden$="[[!organic]]"><span>Organic</span></iron-label>
-
-            <!-- Gluten Free -->
-            <iron-label class="glutenfree-label" hidden$="[[!glutenfree]]"><span>Gluten Free</span></iron-label>
-
-            <!-- Test Results -->
-            <bloombox-testing
-              mode="basic"
-              thc="[[tests.thc]]"
-              cbd="[[tests.cbd]]"></bloombox-testing>
-          </div><!-- end div.row.stock-flags -->
 
           <!-- Product Media -->
           <div class="product-media edible-media row">
             <div class="bloombox-media-wrap">
               <bloombox-media
-                hidden$="[[_shouldHideImage()]]"
                 disabled
                 partner="[[partner]]"
                 environment="[[environment]]"
-                asset$="[[_image]]"></bloombox-media>
+                asset="[[_image]]"></bloombox-media>
             </div><!-- end div.bloombox-media-wrap -->
           </div><!-- end .row.edible-media -->
 
@@ -100,31 +128,44 @@
           <div class="row pricelist">
             <bloombox-price
               class="edibleSealedPrice"
-              price="[[pricing.unit.value]]"
-              available="[[pricing.unit.available]]"
-              currency="$"></bloombox-price>
+              price="{{pricing.unit.value}}"
+              available="{{pricing.unit.available}}"
+              currency="$"></bloombox-pricelist>
           </div><!-- end div.row.pricelist -->
           <template is="dom-if" if="[[!visible]]">
             <div class="not-in-stock-overlay not-in-stock"></div><!-- end div.not-in-stock-overlay -->
           </template>
         </div><!-- end div.card-content -->
-        <div class="card-actions">
-          <paper-button on-tap="edit"><iron-icon icon="create"></iron-icon>Edit</paper-button>
-          <paper-button on-tap="delete"><iron-icon icon="delete"></iron-icon>Delete</paper-button>
-        </div>
-      </paper-card><!-- end paper-card.product-card.data-content.edible-product -->
+               <div class="card-actions">
+          <paper-icon-button id="editButton" on-tap="edit" icon="create"></paper-icon-button>
+          <paper-tooltip for="editButton" position="left">Edit Edible</paper-tooltip>
+
+          <paper-icon-button id="deleteButton" on-tap="delete" icon="delete"></paper-icon-button>
+          <paper-tooltip for="deleteButton" position="left">Delete Edible</paper-tooltip>
+
+          <paper-icon-button id="markAsInStockButton" on-tap="markAsInStock" icon="check" hidden$="[[visible]]"></paper-icon-button>
+          <paper-tooltip for="markAsInStockButton" position="left">Mark as In-Stock</paper-tooltip>
+
+          <paper-icon-button id="markAsOutOfStockButton" on-tap="markAsOutOfStock" icon="block" hidden$="[[!visible]]"></paper-icon-button>
+          <paper-tooltip for="markAsOutOfStockButton" position="left">Mark as Out-of-Stock</paper-tooltip>
+        </div><!-- end div.card-actions -->
+      </div><!-- end paper-card.product-card.data-content.edible-product -->
     </template>
 
-    <template is="dom-if" if="[[zerostate]]">
-      <paper-card heading="Edible" class="product-card edible-product zerostate fullwidth">
+    <!-- - - - - - - - - - - -->
+    <!-- Zero-State  Content -->
+    <!-- - - - - - - - - - - -->
+    <template is="dom-if" if="[[zerostate]]" strip-whitespace restamp>
+      <div class="product-card edible-card zerostate">
+
         <div class="card-content">
           <div class="basic-info row">
             <!-- Name & Description -->
-            <paper-input id="brandField" placeholder="Brand Name" value="{{brand}}" required no-label-float name="brand" class="form-item edible-brand"></paper-input>
-            <paper-input id="nameField" placeholder="Product Name" value="{{name}}" required no-label-float name="name" class="form-item edible-name"></paper-input>
-            <paper-textarea id="descriptionField" label="Description" value="{{description}}" no-label-float name="description" class="form-item edible-description"></paper-textarea>
+            <paper-input id="brandField" placeholder="Brand Name" value="[[brand]]" required no-label-float name="brand" class="form-item edible-brand"></paper-input>
+            <paper-input id="nameField" placeholder="Product Name" value="[[name]]" required no-label-float name="name" class="form-item edible-name"></paper-input>
+            <paper-textarea id="descriptionField" label="Description" value="[[description]]" no-label-float name="description" class="form-item edible-description"></paper-textarea>
             <paper-dropdown-menu id="typeField" label="Edible Type" class="form-item" noink no-label-float required name="type">
-              <paper-listbox class="dropdown-content" selected="{{type}}" attr-for-selected="key">
+              <paper-listbox class="dropdown-content" selected="[[type]]" attr-for-selected="key">
                 <paper-item key="Baked">Baked</paper-item>
                 <paper-item key="Chocolate">Chocolate</paper-item>
                 <paper-item key="Candy">Candy</paper-item>
@@ -138,10 +179,6 @@
             <div class="row-label">
               <span class="row-label-value">Inventory</span>
             </div><!-- end div.row-label -->
-
-            <div class="in-stock-toggle-option">
-              <paper-checkbox id="showToggle" checked="{{visible}}" class="form-item show-item-toggle" noink>In Stock</paper-checkbox>
-            </div><!-- end .in-stock-toggle-option -->
 
             <div class="premium-toggle-option">
               <paper-checkbox id="premiumToggle" checked="{{premium}}" class="form-item premium-toggle" noink>[[_renderPremiumLabel(partner)]]</paper-checkbox>
@@ -221,21 +258,31 @@
         <!-- Actions -->
         <template is="dom-if" if="[[editing]]">
           <div class="zerostate-actions edible-zerostate-actions card-actions row">
-            <paper-button id="saveButton" raised on-tap="commitEdits"><iron-icon icon="save"></iron-icon>Save</paper-button>
-            <paper-button id="cancelButton" on-tap="cancelEdits"><iron-icon icon="cancel"></iron-icon>Cancel</paper-button>
+        <paper-icon-button
+              id="saveButton"
+              icon="save"
+              on-tap="commitEdits"></paper-icon-button>
+            <paper-tooltip for="saveButton" position="left">Save</paper-tooltip>
+
+            <paper-icon-button
+              id="cancelButton"
+              icon="cancel"
+              on-tap="cancelEdits"></paper-icon-button>
+            <paper-tooltip for="cancelButton" position="left">Cancel Edits</paper-tooltip>
           </div><!-- end .edible-zerostate-actions.card-actions -->
         </template>
-        <template is="dom-if" if="[[!editing]]">
-          <div class="zerostate-actions edible-zerostate-actions edit-actions card-actions row">
-            <paper-button id="submitButton" raised on-tap="persist"><iron-icon icon="check-circle"></iron-icon>Create</paper-button>
-            <paper-button id="discardButton" on-tap="_triggerDiscard"><iron-icon icon="cancel"></iron-icon>Discard</paper-button>
-          </div><!-- end .edible-zerostate-actions.card-actions.edit-actions -->
-        </template>
-      </paper-card><!-- end paper-card.product-card.zerostate.edible-product -->
+      </div><!-- end paper-card.product-card.zerostate.edible-product -->
     </template>
   </template>
 
   <script>
+  function defaultTestConfig() {
+      return {
+        thc: 0.0,
+        cbd: 0.0,
+        terpenes: Polymer.DefaultTerpeneConfig()};
+    };
+
     Polymer.BloomboxEdible = Polymer({
       is: 'bloombox-edible',
       behaviors: [Polymer.BloomboxBaseProductCardBehavior],
