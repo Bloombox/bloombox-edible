@@ -187,22 +187,6 @@
               <paper-checkbox id="premiumToggle" checked="{{premium}}" class="form-item premium-toggle" noink>[[_renderPremiumLabel(partner)]]</paper-checkbox>
             </div><!-- end .premium-toggle-option -->
 
-            <div class="sale-toggle-option">
-              <div class="sale-toggle-container">
-                <paper-checkbox id="saleToggle" checked="[[_isOnSale()]]" on-tap="_toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
-              </div><!-- end .sale-toggle-container -->
-              <template is="dom-if" if="{{sale}}" restamp strip-whitespace>
-                <div class="sale-amount-container">
-                  <paper-slider id="saleValue" pin value="{{sale}}" max="95" min="5" editable step="5" class="form-item"></paper-slider>
-                </div><!-- end .sale-amount-container -->
-                <div class="sale-percentage-label">% off</div>
-              </template>
-            </div><!-- end .sale-toggle-option -->
-
-            <div class="bogo-toggle-option">
-              <paper-checkbox id="bogoToggle" checked="{{bogo}}" class="form-item item-bogo-toggle" noink>Buy One, Get One</paper-checkbox>
-            </div><!-- end .bogo-toggle-option -->
-
             <div class="organic-toggle-option">
               <paper-checkbox id="organicToggle" checked="{{organic}}" class="form-item item-organic-toggle" noink>Organic</paper-checkbox>
             </div><!-- end .organic-toggle-option -->
@@ -218,6 +202,22 @@
             <div class="glutenfree-toggle-option">
               <paper-checkbox id="glutenfreeToggle" checked="{{glutenfree}}" class="form-item item-glutenfree-toggle" noink>Gluten Free</paper-checkbox>
             </div><!-- end .glutenfree-toggle-option -->
+
+            <div class="bogo-toggle-option">
+              <paper-checkbox id="bogoToggle" checked="{{bogo}}" class="form-item item-bogo-toggle" noink>Buy One, Get One</paper-checkbox>
+            </div><!-- end .bogo-toggle-option -->
+
+            <div class="sale-toggle-option">
+              <div class="sale-toggle-container">
+                <paper-checkbox id="saleToggle" checked="[[_isOnSale]]" on-tap="_toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
+              </div><!-- end .sale-toggle-container -->
+              <template is="dom-if" if="{{sale}}" restamp strip-whitespace>
+                <div class="sale-amount-container">
+                  <paper-slider id="saleValue" pin max="95" min="5" editable step="5" class="form-item"></paper-slider>
+                </div><!-- end .sale-amount-container -->
+                <div class="sale-percentage-label">% off</div>
+              </template>
+            </div><!-- end .sale-toggle-option -->
           </div><!-- end .row.stock-flags -->
 
           <!-- Test Results -->
