@@ -96,6 +96,9 @@
                 <!-- Organic -->
                 <iron-label class="organic-label" hidden$="[[!organic]]"><span>Organic</span></iron-label>
 
+                <!-- Sugar Free -->
+                <iron-label class="sugarfree-label" hidden$="[[!sugarfree]]"><span>Sugar Free</span></iron-label>
+
                 <!-- Gluten Free -->
                 <iron-label class="glutenfree-label" hidden$="[[!glutenfree]]"><span>Gluten Free</span></iron-label>
               </div>
@@ -207,6 +210,10 @@
             <div class="vegan-toggle-option">
               <paper-checkbox id="veganToggle" checked="{{vegan}}" class="form-item item-vegan-toggle" noink>Vegan</paper-checkbox>
             </div><!-- end .vegan-toggle-option -->
+
+            <div class="sugarfree-toggle-option">
+              <paper-checkbox id="sugarfreeToggle" checked="{{sugarfree}}" class="form-item item-sugarfree-toggle" noink>Sugar Free</paper-checkbox>
+            </div><!-- end .sugarfree-toggle-option -->
 
             <div class="glutenfree-toggle-option">
               <paper-checkbox id="glutenfreeToggle" checked="{{glutenfree}}" class="form-item item-glutenfree-toggle" noink>Gluten Free</paper-checkbox>
@@ -321,6 +328,17 @@
         },
 
         /**
+         * Flag value indicating that this item has no sugar
+         * and/or is marketed towards the low-sugar community.
+         */
+        sugarfree: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        /**
          * Flag value indicating that this item meets a vegan person's dietary requirements
          * and/or is marketed towards that community.
          */
@@ -404,6 +422,10 @@
           payload.flags = payload.flags || {};
           payload.flags.glutenfree = this.get("glutenfree");
         }
+        if (this.get("sugarfree") != null && this.get("sugarfree") != undefined) {
+          payload.flags = payload.flags || {};
+          payload.flags.sugarfree = this.get("sugarfree");
+        }
         if (this.get("description") !== undefined && this.get("description") !== null &&
             this.get("description").length > 0) payload.description = this.get("description");
         return payload;
@@ -470,6 +492,10 @@
         if (this.$$("#organicToggle").checked) {
           payload.flags = payload.flags || {};
           payload.flags.organic = true;
+        }
+        if (this.$$("#sugarfreeToggle").checked) {
+          payload.flags = payload.flags || {};
+          payload.flags.sugarfree = true;
         }
         if (this.$$("#glutenfreeToggle").checked) {
           payload.flags = payload.flags || {};
