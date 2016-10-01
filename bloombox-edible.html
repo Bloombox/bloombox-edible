@@ -164,10 +164,10 @@
         <div class="card-content">
           <div class="basic-info row">
             <!-- Name & Description -->
-            <paper-input id="brandField" placeholder="Brand Name" autofocus value="[[brand]]" required auto-validate error-message="Please provide a brand!" no-label-float name="brand" class="form-item edible-brand"></paper-input>
-            <paper-input id="nameField" value="[[name]]" required auto-validate error-message="Please provide a name!" label="Name" name="name" class="form-item edible-name"></paper-input>
-            <paper-textarea id="descriptionField" label="Description" value="[[description]]" name="description" class="form-item strain-description"></paper-textarea>
-            <paper-dropdown-menu id="typeField" label="Edible Type" class="form-item" noink no-label-float auto-validate required name="type">
+            <paper-input id="brandField" placeholder="Brand Name" autofocus tabindex="0" value="[[brand]]" required auto-validate error-message="Please provide a brand!" no-label-float name="brand" class="form-item edible-brand"></paper-input>
+            <paper-input id="nameField" value="[[name]]" required tabindex="1" auto-validate error-message="Please provide a name!" label="Name" name="name" class="form-item edible-name"></paper-input>
+            <paper-textarea id="descriptionField" label="Description" tabindex="2" value="[[description]]" name="description" class="form-item strain-description"></paper-textarea>
+            <paper-dropdown-menu id="typeField" label="Edible Type" tabindex="3" class="form-item" noink no-label-float auto-validate required name="type">
               <paper-listbox class="dropdown-content" selected="[[type]]" attr-for-selected="key">
                 <paper-item key="Baked">Baked</paper-item>
                 <paper-item key="Chocolate">Chocolate</paper-item>
@@ -184,36 +184,36 @@
             </div><!-- end div.row-label -->
 
             <div class="premium-toggle-option">
-              <paper-checkbox id="premiumToggle" checked="{{premium}}" class="form-item premium-toggle" noink>[[_renderPremiumLabel(partner)]]</paper-checkbox>
+              <paper-checkbox id="premiumToggle" checked="{{premium}}" tabindex="4" class="form-item premium-toggle" noink>[[_renderPremiumLabel(partner)]]</paper-checkbox>
             </div><!-- end .premium-toggle-option -->
 
             <div class="organic-toggle-option">
-              <paper-checkbox id="organicToggle" checked="{{organic}}" class="form-item item-organic-toggle" noink>Organic</paper-checkbox>
+              <paper-checkbox id="organicToggle" checked="{{organic}}" tabindex="5" class="form-item item-organic-toggle" noink>Organic</paper-checkbox>
             </div><!-- end .organic-toggle-option -->
 
             <div class="vegan-toggle-option">
-              <paper-checkbox id="veganToggle" checked="{{vegan}}" class="form-item item-vegan-toggle" noink>Vegan</paper-checkbox>
+              <paper-checkbox id="veganToggle" checked="{{vegan}}" tabindex="6" class="form-item item-vegan-toggle" noink>Vegan</paper-checkbox>
             </div><!-- end .vegan-toggle-option -->
 
             <div class="sugarfree-toggle-option">
-              <paper-checkbox id="sugarfreeToggle" checked="{{sugarfree}}" class="form-item item-sugarfree-toggle" noink>Sugar Free</paper-checkbox>
+              <paper-checkbox id="sugarfreeToggle" checked="{{sugarfree}}" tabindex="7" class="form-item item-sugarfree-toggle" noink>Sugar Free</paper-checkbox>
             </div><!-- end .sugarfree-toggle-option -->
 
             <div class="glutenfree-toggle-option">
-              <paper-checkbox id="glutenfreeToggle" checked="{{glutenfree}}" class="form-item item-glutenfree-toggle" noink>Gluten Free</paper-checkbox>
+              <paper-checkbox id="glutenfreeToggle" checked="{{glutenfree}}" tabindex="8" class="form-item item-glutenfree-toggle" noink>Gluten Free</paper-checkbox>
             </div><!-- end .glutenfree-toggle-option -->
 
             <div class="bogo-toggle-option">
-              <paper-checkbox id="bogoToggle" checked="{{bogo}}" class="form-item item-bogo-toggle" noink>Buy One, Get One</paper-checkbox>
+              <paper-checkbox id="bogoToggle" checked="{{bogo}}" tabindex="9" class="form-item item-bogo-toggle" noink>Buy One, Get One</paper-checkbox>
             </div><!-- end .bogo-toggle-option -->
 
             <div class="sale-toggle-option">
               <div class="sale-toggle-container">
-                <paper-checkbox id="saleToggle" checked="[[_isOnSale]]" on-tap="_toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
+                <paper-checkbox id="saleToggle" checked="[[_isOnSale]]" tabindex="10" on-tap="_toggleSale" class="form-item sale-toggle" noink>On Sale</paper-checkbox>
               </div><!-- end .sale-toggle-container -->
               <template is="dom-if" if="{{sale}}" restamp strip-whitespace>
                 <div class="sale-amount-container">
-                  <paper-slider id="saleValue" pin max="95" min="5" editable step="5" class="form-item"></paper-slider>
+                  <paper-slider id="saleValue" pin max="95" min="5" tabindex="11" editable step="5" class="form-item"></paper-slider>
                 </div><!-- end .sale-amount-container -->
                 <div class="sale-percentage-label">% off</div>
               </template>
@@ -226,7 +226,7 @@
               <span class="row-label-value">Testing</span>
             </div><!-- end div.row-label -->
 
-            <paper-checkbox id="testsToggle" checked="[[_hasKnownTestResults()]]" on-tap="_toggleTests" class="form-item tests-toggle" noink>Test Results</paper-checkbox>
+            <paper-checkbox id="testsToggle" checked="[[_hasKnownTestResults()]]" tabindex="12" on-tap="_toggleTests" class="form-item tests-toggle" noink>Test Results</paper-checkbox>
             <div class="test-results-container">
               <template is="dom-if" if="{{tests}}" restamp strip-whitespace>
                 <bloombox-testing
