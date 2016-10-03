@@ -439,7 +439,7 @@
        */
       readZeroStateForm: function() {
         var payload = {},
-            priceValue = this.$$("#editablePrice").price,
+            priceValue = this.$$("#editablePrice")._priceValue,
             priceAvailable = this.$$("#editablePrice").available,
             pricelist = {},
             mi, mpayload, testing;
