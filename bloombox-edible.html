@@ -547,7 +547,7 @@
           payload.flags = payload.flags || {};
           payload.flags.glutenfree = false;
         }
-        if (this.$$("#descriptionField").value !== undefined && this.$$("#descriptionField").value.length > 0) {
+        if (this.$$("#descriptionField") && this.$$("#descriptionField").value !== undefined && this.$$("#descriptionField").value.length > 0) {
           payload.description = this.$$("#descriptionField").value;
         } else {
           payload.description = null;  // clear any current description
