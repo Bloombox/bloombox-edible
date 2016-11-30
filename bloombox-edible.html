@@ -101,6 +101,11 @@
 
                 <!-- Gluten Free -->
                 <iron-label class="glutenfree-label" hidden$="[[!glutenfree]]"><span>Gluten Free</span></iron-label>
+
+                <!-- Species -->
+                <template is="dom-if" if="[[species]]" strip-whitespace restamp>
+                  <iron-label class="species-label"><span>[[_renderSpeciesLabel(species)]]</span></iron-label>
+                </template>
               </div>
 
               <!-- Test Results -->
@@ -175,6 +180,18 @@
                 <paper-item key="Other" class="unspecified-item-value">Other</paper-item>
               </paper-listbox>
             </paper-dropdown-menu><!-- end paper-dropdown-menu#typeField -->
+
+            <!-- Species -->
+            <paper-dropdown-menu id="speciesField" label="Species" class="form-item" noink auto-validate required name="species">
+              <paper-listbox class="dropdown-content" selected="[[species]]" attr-for-selected="key">
+                <paper-item key="Indica">Indica</paper-item>
+                <paper-item key="Hybrid (Indica Dominant)">Hybrid (Indica Dominant)</paper-item>
+                <paper-item key="Hybrid (No Dominance)">Hybrid (No Dominance)</paper-item>
+                <paper-item key="Hybrid (Sativa Dominant)">Hybrid (Sativa Dominant)</paper-item>
+                <paper-item key="Sativa">Sativa</paper-item>
+                <paper-item key="Unspecified" class="unspecified-item-value">Unspecified</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
           </div><!-- end .row.basic-info -->
 
           <!-- Pricing/Sale Flags -->
@@ -385,6 +402,7 @@
         payload.name = this.get("name");
         payload.brand = this.get("brand");
         payload.type = this.get("type");
+        payload.species = this.get("species");
         payload.photos = this.get("photos") || [];
         payload.pricing = this.get("pricing");
 
@@ -474,6 +492,7 @@
         payload.name = this.$$("#nameField").value;
         payload.brand = this.$$("#brandField").value;
         payload.type = this.$$("#typeField").value;
+        payload.species = this.$$("#speciesField").value;
         
         if (this.get("photos") && this.get("photos").length > 0)
           payload.photos = this.get("photos");
