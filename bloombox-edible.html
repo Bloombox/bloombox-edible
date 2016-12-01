@@ -420,7 +420,7 @@
         payload.name = this.get("name");
         payload.brand = this.get("brand");
         payload.type = this.get("type");
-        payload.species = this.get("species");
+        payload.species = this.get("species") || null;
         payload.photos = this.get("photos") || [];
         payload.pricing = this.get("pricing");
 
@@ -510,7 +510,7 @@
         payload.name = this._trim(this.$$("#nameField").value);
         payload.brand = this._trim(this.$$("#brandField").value);
         payload.type = this.$$("#typeField").value;
-        payload.species = this.$$("#speciesField").value;
+        payload.species = this.$$("#speciesField").value || null;
         
         if (this.get("photos") && this.get("photos").length > 0)
           payload.photos = this.get("photos");
