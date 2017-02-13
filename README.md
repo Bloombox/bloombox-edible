@@ -1,4 +1,6 @@
 
-##&lt;bloombox-edible&gt;  [![CircleCI](https://circleci.com/gh/Bloombox/bloombox-edible.svg?style=svg&circle-token=6719ec25a6bb6be333051f08d7a00d3f4f9ee7c0)](https://circleci.com/gh/Bloombox/bloombox-edible)
+##&lt;bloombox-edible&gt;  [![Build Status](https://buildbot.hq.mm-corp.systems/jenkins/buildStatus/icon?job=Bloombox/elements/products/bloombox-edible)](https://buildbot.hq.mm-corp.systems/jenkins/job/Bloombox/elements/products/bloombox-edible)
+
+[![Code Climate](https://codeclimate.com/repos/58a225c53d053f47ef000001/badges/ba08a63568706f3c2ee5/gpa.svg)](https://codeclimate.com/repos/58a225c53d053f47ef000001/feed) [![Issue Count](https://codeclimate.com/repos/58a225c53d053f47ef000001/badges/ba08a63568706f3c2ee5/issue_count.svg)](https://codeclimate.com/repos/58a225c53d053f47ef000001/feed)
 
 The `bloombox-edible` element provides UI for creating and managing edible products.
