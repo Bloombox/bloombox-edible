@@ -1,24 +1,24 @@
 {
-  "name": "bloombox-edible",
+  "name": "bloombox-merch",
   "version": "0.0.1",
-  "description": "Provides UI for creating and managing edible products",
+  "description": "Provides UI for creating and managing merch products",
   "main": "index.html",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bloombox/bloombox-edible.git"
+    "url": "https://github.com/bloombox/bloombox-merch.git"
   },
   "keywords": [
     "polymer",
     "web-components",
     "bloombox"
   ],
-  "author": "Sam Gammon <sam@momentum.io>",
+  "author": "Tyler Porras <tyler@momentum.io>",
   "license": "Private, all rights reserved",
   "private": true,
   "bugs": {
-    "url": "https://github.com/bloombox/bloombox-edible/issues"
+    "url": "https://github.com/bloombox/bloombox-merch/issues"
   },
-  "homepage": "https://github.com/bloombox/bloombox-edible",
+  "homepage": "https://github.com/bloombox/bloombox-merch",
   "dependencies": {
     "bower-art-resolver": "^2.0.8",
     "bower": "^1.4.1",

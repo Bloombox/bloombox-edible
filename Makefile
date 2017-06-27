@@ -1,6 +1,6 @@
 
 #
-# - Bloombox - bloombox-edible
+# - Bloombox - bloombox-merch
 #
 
 BUILDBOT ?= 0
@@ -10,7 +10,7 @@ CREDENTIALS ?= 1
 VERSION ?= 0.0.1
 
 all: build
-	@echo "bloombox-edible is ready."
+	@echo "bloombox-merch is ready."
 
 
 #
@@ -24,10 +24,10 @@ build: $(TARGET) $(ENV) dependencies
 
 ifeq ($(BUILDBOT),yes)
 test:
-	wct --job-name "bloombox-edible" --expanded --build-number "$(BUILD_NUMBER)" --sauce-tunnel-id "$(SAUCE_TUNNEL)" --plugin wct-jenkins
+	wct --job-name "bloombox-merch" --expanded --build-number "$(BUILD_NUMBER)" --sauce-tunnel-id "$(SAUCE_TUNNEL)" --plugin wct-jenkins
 else
 test:
-	@wct --job-name "bloombox-edible"
+	@wct --job-name "bloombox-merch"
 endif
 
 quickbuild:

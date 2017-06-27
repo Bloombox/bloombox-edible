@@ -1,10 +1,10 @@
 {
-  "name": "bloombox-edible",
-  "description": "Provides UI for creating and managing edible products",
+  "name": "bloombox-merch",
+  "description": "Provides UI for creating and managing merch products",
   "version": "0.0.1",
   "private": true,
   "authors": [
-    "Sam Gammon <sam@momentum.io>"
+    "Tyler Porras <tyler@momentum.io>"
   ],
   "keywords": [
     "web-components",
@@ -13,11 +13,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com:bloombox/bloombox-edible.git"
+    "url": "ssh://git@github.com:bloombox/bloombox-merch.git"
   },
   "license": "Private, All Rights Reserved",
-  "homepage": "https://github.com/bloombox/bloombox-edible",
-  "main": "bloombox-edible.html",
+  "homepage": "https://github.com/bloombox/bloombox-merch",
+  "main": "bloombox-merch.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.5.0",
     "paper-card": "PolymerElements/paper-card#^1.1.1",
